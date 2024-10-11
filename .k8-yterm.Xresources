@@ -1,0 +1,315 @@
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! YTERM settings (defaults)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! default window title
+k8-yterm.window.title: YTERM
+
+! $TERM value
+! (not affected by reloads)
+k8-yterm.term.name: rxvt
+! keyboard reporting style: "rxvt" or "xterm"
+! (not affected by reloads)
+k8-yterm.term.type: rxvt
+! monospaced font: "Name <Bold|Medium> [Italic|Regular|Oblique], <size>"
+! (not affected by reloads)
+k8-yterm.term.font: Terminus Bold, 20
+! Terminus font contains proper gfx chars starting from 0x01;
+! other fonts may not have this. if your font is not like Terminus,
+! use "unicode" here, to approximate the set with unicode codepoints
+k8-yterm.term.font.gfx: terminus
+
+! wait for some time before setting terminal size
+! this hack is to allow WM to setup yterm size
+! sadly, there is no X11 event to tell us that
+! WM is done configuring the window, hence this hack
+! time in msecs, and affects only "-e" and hotswap
+k8-yterm.term.winch.delay: 150
+
+! wait for some time before executing the initial command
+! this hack is to allow WM to setup yterm size
+! sadly, there is no X11 event to tell us that
+! WM is done configuring the window, hence this hack
+! time in msecs, and affects only "-e"
+k8-yterm.term.exec.delay: 50
+
+! scrollback history setting for new tabs
+k8-yterm.history.enabled: tan
+! global screen refresh rate, frames per second
+k8-yterm.refresh.fps: 40
+
+! vim is absolutely fuckin' broken (and always been).
+! it sends DCS codes, but cannot parse a properly-formatted
+! DCS reply. if you happen to use vim (why?! please, don't!),
+! change this value to `tan` (or `true`).
+k8-yterm.idiotic.vim: ona
+
+! tab bar font: "Name <Bold|Medium> [Italic|Regular|Oblique], <size>"
+! (not affected by reloads)
+k8-yterm.tabs.font: Helvetica Medium Regular, 14
+! number of visible tabs, or "0" to disable tab bar
+k8-yterm.tabs.visible: 6
+! cycle tabs on switching?
+k8-yterm.tabs.cyclic: ona
+
+k8-yterm.tab.color.frame.fg: #607a50
+k8-yterm.tab.color.frame.bg: #333
+
+k8-yterm.tab.color.normal.bg:       #333
+k8-yterm.tab.color.normal.text:     #809a70
+k8-yterm.tab.color.normal.index:    #a0ba90
+k8-yterm.tab.color.normal.ellipsis: #607a50
+
+k8-yterm.tab.color.active.bg:       #000
+k8-yterm.tab.color.active.text:     #666
+k8-yterm.tab.color.active.index:    #888
+k8-yterm.tab.color.active.ellipsis: #444
+
+k8-yterm.tab.color.dead.bg:       #c00
+k8-yterm.tab.color.dead.text:     #ee0
+k8-yterm.tab.color.dead.index:    #ff0
+k8-yterm.tab.color.dead.ellipsis: #bb0
+
+k8-yterm.tab.color.dead.active.bg:       #300
+k8-yterm.tab.color.dead.active.text:     #e00
+k8-yterm.tab.color.dead.active.index:    #f00
+k8-yterm.tab.color.dead.active.ellipsis: #a00
+
+
+! external application to handle X11 selections
+! any app that can read and write stdio will do
+! if you want a GOOD one, use "xsel": https://vergenet.net/~conrad/software/xsel/
+! you can specify a full path if the app is not in your $PATH variable
+! default is "xsel" with right options
+! actually, YTERM contains built-in copy of xsel now, so the following
+! settings should work without installing any external software.
+
+! "paste_from" should write X selection contents to stdout, close it and exit when finished
+k8-yterm.paste.primary  : $SELF xsel -p -o -t 16666 --trim
+k8-yterm.paste.secondary: $SELF xsel -s -o -t 16666 --trim
+k8-yterm.paste.clipboard: $SELF xsel -b -o -t 16666 --trim
+
+! "copy_to" should write X selection contents to stdout, close it and exit when finished
+k8-yterm.copyto.primary  : $SELF xsel -p -i -t 0 --trim
+k8-yterm.copyto.secondary: $SELF xsel -s -i -t 0 --trim
+k8-yterm.copyto.clipboard: $SELF xsel -b -i -t 0 --trim
+
+! if allowed, single escape press will send ESC ESC; use alt+escape to send single ESC
+k8-yterm.esc-esc.fix: tan
+
+! allow mouse reporing? control sequences will be accepted in any case
+k8-yterm.mouse.reports: ona
+
+! cursor blink time, in milliseconds; use 0 to disable
+k8-yterm.cursor.blink.time: 700
+
+! cursor colors for blinking phases; use "none" to hide the cursor in the given phase
+! note that only hex color values in the form "#rgb" or "#rrggbb" are accepted
+k8-yterm.cursor.color0.fg: #050
+k8-yterm.cursor.color0.bg: #0f0
+k8-yterm.cursor.color1.fg: #050
+k8-yterm.cursor.color1.bg: #0c0
+! inactive cursor is rendered as an empty rectangle with this color
+k8-yterm.cursor.color.inactive: #009900
+
+! default foreground and background
+k8-yterm.fg.color.default: #b2b2b2
+k8-yterm.bg.color.default: #000
+! high intensity
+k8-yterm.fg.color.high.default: #fff
+k8-yterm.bg.color.high.default: #000
+! colors for various special attributes (cannot be "none")
+k8-yterm.fg.color.bold: #00afaf
+k8-yterm.fg.color.underline: #00af00
+k8-yterm.fg.color.bold.underline: #afaf00
+! high intensity
+k8-yterm.fg.color.high.bold: #0ff
+k8-yterm.fg.color.high.underline: #4f0
+k8-yterm.fg.color.high.bold.underline: #ff4
+
+! selection
+k8-yterm.selection.color.fg: #fa0
+k8-yterm.selection.color.bg: #333
+! selection block
+k8-yterm.selection.block.color.fg: #fff
+k8-yterm.selection.block.color.bg: #05c
+! tint selection color with real color intensity?
+k8-yterm.selection.tint: tan
+
+! OSD menus
+k8-yterm.osd-menu.color.active.bg: #d9d9ae
+k8-yterm.osd-menu.color.active.fg: #000
+k8-yterm.osd-menu.color.active.cursor.bg: #0bb
+k8-yterm.osd-menu.color.active.cursor.fg: #000
+k8-yterm.osd-menu.color.active.hotkey.bg: #d9d9ae
+k8-yterm.osd-menu.color.active.hotkey.fg: #c00
+k8-yterm.osd-menu.color.active.cursor.hotkey.bg: #0bb
+k8-yterm.osd-menu.color.active.cursor.hotkey.fg: #c00
+
+k8-yterm.osd-menu.color.passive.bg: #a0a080
+k8-yterm.osd-menu.color.passive.fg: #000
+k8-yterm.osd-menu.color.passive.cursor.bg: #066
+k8-yterm.osd-menu.color.passive.cursor.fg: #000
+k8-yterm.osd-menu.color.passive.hotkey.bg: #a0a080
+k8-yterm.osd-menu.color.passive.hotkey.fg: #600
+k8-yterm.osd-menu.color.passive.cursor.hotkey.bg: #066
+k8-yterm.osd-menu.color.passive.cursor.hotkey.fg: #600
+
+! or "none"
+k8-yterm.osd-menu.shadow.color: #000
+k8-yterm.osd-menu.shadow.x-ofs: 6
+k8-yterm.osd-menu.shadow.y-ofs: 6
+
+! 8 normal colors
+k8-yterm.color0: #000000
+k8-yterm.color1: #b21818
+k8-yterm.color2: #18b218
+k8-yterm.color3: #b26818
+k8-yterm.color4: #1818b2
+k8-yterm.color5: #b218b2
+k8-yterm.color6: #18b2b2
+k8-yterm.color7: #b2b2b2
+! 8 bright colors
+k8-yterm.color8: #686868
+k8-yterm.color9: #ff5454
+k8-yterm.color10: #54ff54
+k8-yterm.color11: #ffff54
+k8-yterm.color12: #5454ff
+k8-yterm.color13: #ff54ff
+k8-yterm.color14: #54ffff
+k8-yterm.color15: #ffffff
+
+
+! various hotkey definitions
+!   .bind -- define keybind, emacs style; Xlib key names are w/o "XK_" prefix
+!             "C-" -- ctrl mod
+!             "M-" -- alt mod
+!             "H-" -- hyper mod
+!             "S-" -- shift mod
+!   .path -- set current path for the new tab (if it executes something).
+!            special values:
+!              $HOME -- home dir of the current used
+!              $PWD  -- current working directory of the current tab
+!              $CWD  -- the same as $PWD
+!              literal path (must be absolute)
+!            default is user home dir ($HOME)
+!   .color -- force color mode for the new tab.
+!               mono   -- monochrome, black-and-white
+!               bw     -- monochrome, black-and-white (same as "mono")
+!               green  -- monochrome, green
+!               normal -- normal color mode
+!   .exec -- string to execute.
+!            special values:
+!            if the first arg is "$SHELL", the envvar with this name will be used
+!   .kill -- kill current process with the given signal (arg is signal number)
+
+k8-yterm.keybind.menu-tab-options.bind: H-F10
+k8-yterm.keybind.menu-tab-options.menu: tab-options
+k8-yterm.keybind.menu-tab-options1.bind: Menu
+k8-yterm.keybind.menu-tab-options1.menu: tab-options
+
+! tab options currently allows to modify global options too
+!k8-yterm.keybind.menu-global-options.bind: M-H-F10
+!k8-yterm.keybind.menu-global-options.menu: global-options
+
+
+k8-yterm.keybind.start-selection.bind: M-space
+k8-yterm.keybind.start-selection.selection: start
+
+k8-yterm.keybind.start-selection1.bind: C-KP_Insert
+k8-yterm.keybind.start-selection1.selection: start
+
+k8-yterm.keybind.start-selection2.bind: M-KP_Insert
+k8-yterm.keybind.start-selection2.selection: start
+
+
+! command: "toggle" or bool
+!k8-yterm.keybind.mouse-reports-toggle.bind: C-H-m
+!k8-yterm.keybind.mouse-reports-toggle.mouse-report: toggle
+
+! command: "toggle" or bool
+!k8-yterm.keybind.escesc-toggle.bind: C-H-e
+!k8-yterm.keybind.escesc-toggle.escesc: toggle
+
+!k8-yterm.keybind.show-cursor.bind: C-H-F11
+!k8-yterm.keybind.show-cursor.cursor: tan
+
+! command: "toggle" or bool
+!k8-yterm.keybind.history-mode.bind: C-H-F9
+!k8-yterm.keybind.history-mode.history-mode: toggle
+
+!k8-yterm.keybind.color-normal.bind: C-H-1
+!k8-yterm.keybind.color-normal.color-mode: color
+
+!k8-yterm.keybind.color-mono.bind: C-H-2
+!k8-yterm.keybind.color-mono.color-mode: bw
+
+!k8-yterm.keybind.color-green.bind: C-H-3
+!k8-yterm.keybind.color-green.color-mode: green
+
+k8-yterm.keybind.paste-primary.bind: S-Insert
+k8-yterm.keybind.paste-primary.paste: primary
+k8-yterm.keybind.paste-secondary.bind: M-Insert
+k8-yterm.keybind.paste-secondary.paste: secondary
+k8-yterm.keybind.paste-clipboard.bind: M-S-Insert
+k8-yterm.keybind.paste-clipboard.paste: clipboard
+
+k8-yterm.keybind.copy-to-primary.bind: S-Insert
+k8-yterm.keybind.copy-to-primary.copy-to: primary
+k8-yterm.keybind.copy-to-secondary.bind: M-Insert
+k8-yterm.keybind.copy-to-secondary.copy-to: secondary
+k8-yterm.keybind.copy-to-clipboard.bind: M-S-Insert
+k8-yterm.keybind.copy-to-clipboard.copy-to: clipboard
+k8-yterm.keybind.copy-to-primary-2.bind: M-S-c
+k8-yterm.keybind.copy-to-primary-2.copy-to: clipboard
+
+k8-yterm.keybind.tab-prev.bind: C-M-Left
+k8-yterm.keybind.tab-prev.tab: prev
+
+k8-yterm.keybind.tab-next.bind: C-M-Right
+k8-yterm.keybind.tab-next.tab: next
+
+k8-yterm.keybind.tab-first.bind: C-M-Home
+k8-yterm.keybind.tab-first.tab: first
+
+k8-yterm.keybind.tab-last.bind: C-M-End
+k8-yterm.keybind.tab-last.tab: last
+
+k8-yterm.keybind.tab-to-left.bind: M-S-Left
+k8-yterm.keybind.tab-to-left.tab: move-left
+
+k8-yterm.keybind.tab-to-right.bind: M-S-Right
+k8-yterm.keybind.tab-to-right.tab: move-right
+
+k8-yterm.keybind.newtab.bind: C-M-t
+k8-yterm.keybind.newtab.path: $PWD
+k8-yterm.keybind.newtab.exec: $SHELL -i
+! for exec, you can use boolean, or "default"
+k8-yterm.keybind.newtab.history: tan
+
+k8-yterm.keybind.newtab-colored.bind:  C-M-S-t
+k8-yterm.keybind.newtab-colored.color: color
+k8-yterm.keybind.newtab-colored.path:  $PWD
+k8-yterm.keybind.newtab-colored.exec:  $SHELL -i
+
+k8-yterm.keybind.mc.bind: C-M-m
+k8-yterm.keybind.mc.path: $PWD
+k8-yterm.keybind.mc.exec: mc
+
+k8-yterm.keybind.root-shell.bind:  C-M-r
+k8-yterm.keybind.root-shell.path:  $PWD
+k8-yterm.keybind.root-shell.color: green
+k8-yterm.keybind.root-shell.exec:  suka -F -
+
+! cannot use su due to "security fix". fuck!
+k8-yterm.keybind.root-mc.bind:  C-M-p
+k8-yterm.keybind.root-mc.path:  $PWD
+k8-yterm.keybind.root-mc.color: green
+k8-yterm.keybind.root-mc.exec:  suka -F - root -c mc
+
+k8-yterm.keybind.impersonate.bind: C-M-l
+k8-yterm.keybind.impersonate.path: /
+k8-yterm.keybind.impersonate.exec: imper mc
+
+! kill process in the current tab
+k8-yterm.keybind.kill-process.bind: C-H-k
+k8-yterm.keybind.kill-process.kill: SIG_KILL

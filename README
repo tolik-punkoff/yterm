@@ -1,0 +1,183 @@
+Ketmar's YTERM -- emulator of a terminal emulator
+=================================================
+
+YTERM emulates a proper terminal emulator with tab support.
+It implements small subset of the real terminal emulation,
+enough to run most console software. Many features are not
+implemented, and will never be implemented because the author
+doesn't need them.
+
+YTERM uses "rxvt" $TERM setting, but it supports 256 colors.
+So it may be better to use "rxvt-256", but meh... RGB color
+support is there too (but you cannot detect it via DCS yet).
+
+Keyboard --> ESC sequences translation is hardcoded. There is
+no way to change what, for example, F1 key will send without
+changing the source code and recompiling YTERM. This is not an
+oversight.
+
+Options set in config may be changed on the fly. You can send
+SIGHUP to trigger config reloading (or use built-in menu).
+
+You need X server session with 24 or 32 BPP to run YTERM. The
+code doesn't try to allocate colors from X server, it is using
+hardcoded RGB values. That is, your X server is better have the
+same color encoding as mine (which is likely true for X.org).
+
+YTERM supports only UTF and KOI locales. Locale autodetection
+is very simplistic, but it works for me.
+
+Renderer will try to update only changed screen cells, and will
+use `XCopyArea()` to implement scrolling, if possible.
+
+
+Building and installing
+-----------------------
+
+Use "sh 0build.sh" command to build the binary. You will need
+pkg-config and xlib. And there is no command to install YTERM,
+because you can copy the binary wherever you want. Also, only
+GNU/Linux is supported, other OSes may, or may not work. Deal
+with it.
+
+
+Some techincal/implementation details
+-------------------------------------
+
+It is almost impossible to implement a proper terminal emulator
+without diving into DEC VT manuals. And you cannot read one of
+them and be happy, because various details are scattered across
+different documents, and sometimes even erratas. But tbh, I don't
+care about proper VT hardware emulation, I only need enough of it
+to make most console software usable.
+
+It would be much easier if there would be proper specs for emulator
+implementors, but alas. Various escape code descriptions are vague,
+and cannot be used as specs. Take, for example, "set scroll region"
+command: what should happen with cursor position after setting the
+region? What we should do on receiving invalid arguments? What
+happens if cursor is outside of a region? And so on, so on...
+Similar questions could be asked about almost any control sequence.
+And xterm specific sequences are even worser, especially those for
+switching to alt screen and back. (Wich attributes should be saved?)
+
+So I decided to implement the things "as I feel right", and then
+test with several console programs I am using. Everything seems to
+work, therefore I happy. The implementation may be wrong, but it
+doesn't really matter.
+
+Also, I decided to skip implementing various features nobody's using
+anymore, like switching to application keypad mode. Don't do that,
+don't use that. Support for double-width and double-height characters
+is missing too, and only limited support for pseudographics charset
+is implemented. Many other obscure or rarely used features are not
+implemented.
+
+That is, stick to the minimal feature set, and assume nothing, and
+you'll be fine. This is true not only for YTERM, but for any other
+terminal emulator out there. Testing your software only in xterm
+doesn't mean that it will work with other emulators.
+
+
+Using X11 clipboard
+-------------------
+
+You will need to install xsel[0] to use X11 clipboard in YTERM. I am
+too lazy to implement clipboard protocols myself, and tbh, I see no
+reason in doing so. Besides, using xsel has another advantage: your
+copied data will not disappear when you close YTERM. Yes, I am too
+dumb to implement X selection protocol properly. Deal with it.
+
+Actually, I included "xsel" into the source code tree. You can use
+"yterm xsel ..." to run in "xsel mode". It is used for selections now.
+
+
+Copying text from terminal
+--------------------------
+
+As I hate using mouse for this, copying with the mouse is... Oh, you've
+guessed it: not implemented! Instead, I introduced "selection mode", in
+which you can select vertical, rectangular, or sequential area, and copy
+it to X11 clipboard. This mode is also a history viewer. There are no
+special keys to view scrollback history outside of selection mode.
+
+Default key to activate selection mode is Alt+Space. The tab will
+become "amber", and you can select blocks now. Use F3 to start stream
+block (and F3 again to end it), Shift+F3 to start rectangular block,
+and Alt+F3 to start line block. You can change block type by pressing
+"s" for stream, "l" for line, and "r" for rectangular. Default keys to
+copy marked block are listed in config.
+
+Additionally, you can emulate mouse clicks from selection mode. If there
+is no selected block, pressing Enter will perfrom a left click, and
+Ctrl+Enter will perform a double click. There is no way to emulate other
+mouse buttons.
+
+If you will also hold "Shift" while pressing Enter, YTERM will not leave
+selection mode after sending mouse events. It may be handy when you need
+to perform several clicks. But note that screen output is disabled while
+you're in selection mode. Everything the app is trying to write to the
+terminal will appear "instantly" after you leave the selection mode.
+
+It is also possible to view history in this mode. Simply move the cursor
+up. You can also use Page Up/Page Down. Holding "Alt" will scroll the
+history without moving the cursor.
+
+Note that program output is frozen while you are in selection mode, so
+don't leave the tab in this mode for a long time.
+
+
+Notes about scrollback history
+------------------------------
+
+Scrollback history doesn't occupy any RAM. YTERM writes all history to
+nameless temporary files, and reads only the part it needs for rendering.
+Most of the time you don't need no history, so there is little reason to
+keep it in RAM.
+
+There is one little trick (or gotcha) which can be used to clear history
+buffer: turn history off in the built-in menu, and then on again. This
+will delete old history file, and create a new one.
+
+Also, history will not survive hotswap.
+
+
+Mouse support
+-------------
+
+Mouse support is disabled by default, and you'd better leave it disabled.
+I am not using it, and that mode is not properly tested. And yeah, you
+cannot use mouse to select tabs. This is not a bug, I deliberately wrote
+the code this way. Deal with it.
+
+
+Xft support
+-----------
+
+There is no Xft support, and I have no plans to implement it. The only
+usable font for terminals (Terminus) is bitmap anyway. Besides, Xft is
+a fuckin' mess, and it is defective by design.
+
+
+Newer GCC support
+-----------------
+
+Recent GCC versions (anything above 6) are broken. Compiler warnings
+are more and more useless, GCC warns about legitimate function using.
+Just look at shit GCC vomited with yterm: I used `snprintf()` *exactly*
+because it will truncate the string, so it will fit in the buffer. But
+GCC authors are morons, and they are sure that it is wrong to use
+`snprintf()` the way it was designed.
+
+That is, I will not silence this warning (and any other idiotic warnings
+newer GCC versions may vomit). This is compiler bug, introduced by idiots.
+The only way to fix it is to remove idiots from GCC project, and undo all
+damage they've done. Write to GCC bugzilla if want your good GCC back.
+
+
+-------------------------------
+Signed,
+Ketmar Dark // Invisible Vector
+
+
+[0] https://vergenet.net/~conrad/software/xsel/
